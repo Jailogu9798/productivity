@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Content Calculation - FY25-26</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px 5px 0 0;
+            margin-bottom: 2px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            background: white;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #e0e0e0;
+            font-weight: 700;
+            text-align: center;
+            padding: 10px 5px;
+            border: 1px solid #ccc;
+            position: sticky;
+            top: 0;
+        }
+        
+        td {
+            border: 1px solid #ddd;
+            padding: 6px 4px;
+            text-align: right;
+        }
+        
+        tfoot td {
+            background-color: #e8e8e8;
+            font-weight: 600;
+            border-top: 2px solid #bbb;
+        }
+        
+        td:first-child, td:nth-child(2) {
+            text-align: left;
+            font-weight: 500;
+            background-color: #fafafa;
+            position: sticky;
+            left: 0;
+        }
+        
+        .base-highlight {
+            background-color: #fff9c4 !important;
+            border-left: 4px solid #f39c12 !important;
+            border-right: 4px solid #f39c12 !important;
+            font-weight: 700;
+        }
+        
+        .conversion-factor {
+            background-color: #e8f5e9;
+            font-weight: 600;
+            color: #1b5e20;
+        }
+        
+        .denominator-badge {
+            background-color: #f39c12;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .base-info {
+            background-color: #e8f5e9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2e7d32;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .formula-box {
+            background-color: #1e3c72;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        
+        .formula-box strong {
+            color: #ffd700;
+            font-size: 18px;
+        }
+        
+        .work-content {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <!--
+    <div class="base-info">
+        <div style="display:flex; align-items:center;">
+            <div style="background-color:#2e7d32; color:white; padding:8px 15px; border-radius:20px; font-weight:bold; margin-right:15px;">
+                📊 NEW FORMULA
+            </div>
+            <div style="font-size:16px;">
+                <strong style="color:#2e7d32;">Conversion Factor = Current Model Work Content ÷ J1A3 Work Content</strong>
+            </div>
+        </div>
+        <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:20px;">
+            <div style="background-color:white; padding:8px 15px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                <span style="color:#555;">📌 J1A3 Factor = </span>
+                <strong style="color:#2e7d32; font-size:16px;">1.00</strong> 
+                <span style="color:#777;">(J1A3 ÷ J1A3)</span>
+            </div>
+            <div style="background-color:white; padding:8px 15px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                <span style="color:#555;">📌 Factor > 1 = </span>
+                <strong style="color:#2e7d32;">Current model has MORE work content than J1A3</strong>
+            </div>
+            <div style="background-color:white; padding:8px 15px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                <span style="color:#555;">📌 Factor < 1 = </span>
+                <strong style="color:#c62828;">Current model has LESS work content than J1A3</strong>
+            </div>
+        </div>
+    </div>  -->
+    <button><a href="index.php">MDU input </a></button>
+    
+    <div id="statusMessage" style="display:none; padding:12px; margin-bottom:15px; border-radius:4px;"></div>
+    
+    <div class="table-container">
+        <table id="workContentTable">
+            <thead>
+                <tr>
+                    <th rowspan="2">Model</th>
+                    <th rowspan="2">Bike</th>
+                    <th colspan="2">CBU</th>
+                    <th colspan="2">Brazil</th>
+                    <th colspan="2">Thailand</th>
+                    <th colspan="2">Argentina</th>
+                    <th colspan="2">Colombia</th>
+                    <th colspan="2">Nepal</th>
+                    <th colspan="2">Bangladesh</th>
+                </tr>
+                <tr>
+                    <th>Work Content</th>
+                    <th>Conversion Factor</th>
+                    <th>Work Content</th>
+                    <th>Conversion Factor</th>
+                    <th>Work Content</th>
+                    <th>Conversion Factor</th>
+                    <th>Work Content</th>
+                    <th>Conversion Factor</th>
+                    <th>Work Content</th>
+                    <th>Conversion Factor</th>
+                    <th>Work Content</th>
+                    <th>Conversion Factor</th>
+                    <th>Work Content</th>
+                    <th>Conversion Factor</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Dynamic data from JavaScript -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2"><strong>AVERAGE WORK CONTENT</strong></td>
+                    <td id="avgCBU">0.0</td>
+                    <td></td>
+                    <td id="avgBrazil">0.0</td>
+                    <td></td>
+                    <td id="avgThailand">0.0</td>
+                    <td></td>
+                    <td id="avgArgentina">0.0</td>
+                    <td></td>
+                    <td id="avgColombia">0.0</td>
+                    <td></td>
+                    <td id="avgNepal">0.0</td>
+                    <td></td>
+                    <td id="avgBangladesh">0.0</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <script>
+        // ============================================
+        // BASE MODEL - J1A3 New Classic (VVL)
+        // THIS IS THE DENOMINATOR FOR ALL CONVERSION FACTORS
+        // FORMULA: Conversion Factor = Current Model Value ÷ J1A3 Value
+        // ============================================
+        const BASE_MODEL = {
+            model: 'J1A3',
+            bike: 'New Classic (VVL)'
+        };
+        
+        let baseModelValues = null;
+        let allModelsData = [];
+
+        // Load data from API
+        async function loadWorkContentData() {
+            try {
+                const response = await fetch('api.php?endpoint=workcontent');
+                const result = await response.json();
+                
+                if (result.success) {
+                    allModelsData = result.data;
+                    renderTable(allModelsData);
+                    calculateAverages();
+                } else {
+                    console.error('API error:', result.error);
+                    loadFallbackData();
+                }
+            } catch (error) {
+                console.error('Fetch error, using fallback:', error);
+                loadFallbackData();
+            }
+        }
+
+        // Fallback data from image
+        function loadFallbackData() {
+            allModelsData = [
+                {model: 'UCE', bike: 'Bullet', cbu_wc: 495.3, brazil_wc: 0, thailand_wc: 0, argentina_wc: 0, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0},
+                {model: 'J1D', bike: 'Meteor', cbu_wc: 416.1, brazil_wc: 610.6, thailand_wc: 605.9, argentina_wc: 600.9, colombia_wc: 566.0, nepal_wc: 600.9, bangladesh_wc: 608.5},
+                {model: 'J1A', bike: 'Old Classic', cbu_wc: 445.7, brazil_wc: 639.1, thailand_wc: 641.4, argentina_wc: 633.4, colombia_wc: 573.9, nepal_wc: 633.4, bangladesh_wc: 652.0},
+                {model: 'J1A3', bike: 'New Classic (VVL)', cbu_wc: 462.6, brazil_wc: 639.1, thailand_wc: 641.4, argentina_wc: 633.4, colombia_wc: 573.9, nepal_wc: 633.4, bangladesh_wc: 652.0},
+                {model: 'J1A3', bike: 'New Classic (ORG)', cbu_wc: 472.8, brazil_wc: 639.1, thailand_wc: 641.4, argentina_wc: 633.4, colombia_wc: 573.9, nepal_wc: 633.4, bangladesh_wc: 652.0},
+                {model: 'J1C', bike: 'Hunter (ORG)', cbu_wc: 460.5, brazil_wc: 622.3, thailand_wc: 604.7, argentina_wc: 624.7, colombia_wc: 587.8, nepal_wc: 624.7, bangladesh_wc: 630.9},
+                {model: 'J1C', bike: 'Hunter (VVL)', cbu_wc: 445.0, brazil_wc: 622.3, thailand_wc: 604.7, argentina_wc: 624.7, colombia_wc: 587.8, nepal_wc: 624.7, bangladesh_wc: 630.9},
+                {model: 'J1C5', bike: 'New Hunter', cbu_wc: 469.7, brazil_wc: 0, thailand_wc: 0, argentina_wc: 0, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0},
+                {model: 'J1B', bike: 'Bullet', cbu_wc: 470.5, brazil_wc: 0, thailand_wc: 665.12, argentina_wc: 0, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 657.67},
+                {model: 'J1B', bike: 'Bullet Gold', cbu_wc: 463.5, brazil_wc: 0, thailand_wc: 658.92, argentina_wc: 0, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 657.67},
+                {model: 'J1H', bike: 'Goan Classic', cbu_wc: 483.7, brazil_wc: 0, thailand_wc: 0, argentina_wc: 0, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0},
+                {model: 'D3', bike: 'Himalayan', cbu_wc: 784.9, brazil_wc: 911.78, thailand_wc: 903.03, argentina_wc: 908.53, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0},
+                {model: 'D3K', bike: 'Scram', cbu_wc: 724.0, brazil_wc: 854.59, thailand_wc: 843.34, argentina_wc: 849.39, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0},
+                {model: 'D4K', bike: 'New Scram', cbu_wc: 734.1, brazil_wc: 0, thailand_wc: 0, argentina_wc: 0, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0},
+                {model: 'K1G', bike: 'New Himalayan', cbu_wc: 657.4, brazil_wc: 747.20, thailand_wc: 0, argentina_wc: 759.98, colombia_wc: 719.48, nepal_wc: 759.98, bangladesh_wc: 0},
+                {model: 'K1F', bike: 'Guerrilla', cbu_wc: 622.6, brazil_wc: 706.70, thailand_wc: 0, argentina_wc: 719.48, colombia_wc: 719.48, nepal_wc: 719.48, bangladesh_wc: 0},
+                {model: 'P1E', bike: 'Twins', cbu_wc: 646.9, brazil_wc: 700.50, thailand_wc: 713.42, argentina_wc: 712.42, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0},
+                {model: 'P4D', bike: 'Super Meteor', cbu_wc: 684.7, brazil_wc: 764.60, thailand_wc: 781.63, argentina_wc: 781.63, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0},
+                {model: 'P4M', bike: 'Shotgun 650', cbu_wc: 741.8, brazil_wc: 825.00, thailand_wc: 836.03, argentina_wc: 836.03, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0},
+                {model: 'P3K', bike: 'Bear 650', cbu_wc: 674.6, brazil_wc: 0, thailand_wc: 0, argentina_wc: 0, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0},
+                {model: 'P4A', bike: 'Classic 650', cbu_wc: 708.2, brazil_wc: 0, thailand_wc: 0, argentina_wc: 0, colombia_wc: 0, nepal_wc: 0, bangladesh_wc: 0}
+            ];
+            renderTable(allModelsData);
+            calculateAverages();
+        }
+
+        // ============================================
+        // CONVERSION FACTOR CALCULATION
+        // FORMULA: Current Model Value ÷ Base Model Value (J1A3)
+        // Base Model (J1A3) is ALWAYS the DENOMINATOR
+        // ============================================
+        function calculateConversionFactor(currentValue, baseValue) {
+            // Current Model ÷ J1A3 Value
+            if (!currentValue || currentValue === 0 || !baseValue || baseValue === 0) {
+                return 0;
+            }
+            return currentValue / baseValue;
+        }
+
+        // Render Table
+        function renderTable(data) {
+            // Find base model values (J1A3 New Classic VVL)
+            const baseModel = data.find(item => 
+                item.model === BASE_MODEL.model && 
+                item.bike === BASE_MODEL.bike
+            );
+            
+            if (baseModel) {
+                baseModelValues = {
+                    cbu: baseModel.cbu_wc,
+                    brazil: baseModel.brazil_wc,
+                    thailand: baseModel.thailand_wc,
+                    argentina: baseModel.argentina_wc,
+                    colombia: baseModel.colombia_wc,
+                    nepal: baseModel.nepal_wc,
+                    bangladesh: baseModel.bangladesh_wc
+                };
+            }
+
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                
+                // Highlight base model (J1A3 New Classic VVL)
+                const isBaseModel = (item.model === BASE_MODEL.model && 
+                                    item.bike === BASE_MODEL.bike);
+                
+                if (isBaseModel) {
+                    tr.classList.add('base-highlight');
+                }
+                
+                // Model & Bike - Add BASE badge for J1A3
+                let bikeDisplay = item.bike;
+                if (isBaseModel) {
+                    bikeDisplay += ' <span class="denominator-badge">BASE (÷)</span>';
+                }
+                
+                tr.innerHTML += `<td>${item.model}</td>`;
+                tr.innerHTML += `<td>${bikeDisplay}</td>`;
+                
+                // ============ CBU ============
+                tr.innerHTML += `<td class="work-content">${item.cbu_wc ? item.cbu_wc.toFixed(1) : '0.0'}</td>`;
+                let cbuCf;
+                if (isBaseModel) {
+                    cbuCf = '1.000'; // J1A3 ÷ J1A3 = 1
+                } else {
+                    cbuCf = baseModelValues?.cbu ? calculateConversionFactor(item.cbu_wc, baseModelValues.cbu).toFixed(3) : '0.000';
+                }
+                tr.innerHTML += `<td class="conversion-factor">${cbuCf}</td>`;
+                
+                // ============ Brazil ============
+                tr.innerHTML += `<td class="work-content">${item.brazil_wc ? item.brazil_wc.toFixed(1) : '0.0'}</td>`;
+                let brazilCf;
+                if (isBaseModel) {
+                    brazilCf = '1.000';
+                } else {
+                    brazilCf = baseModelValues?.brazil ? calculateConversionFactor(item.brazil_wc, baseModelValues.brazil).toFixed(3) : '0.000';
+                }
+                tr.innerHTML += `<td class="conversion-factor">${brazilCf}</td>`;
+                
+                // ============ Thailand ============
+                tr.innerHTML += `<td class="work-content">${item.thailand_wc ? item.thailand_wc.toFixed(1) : '0.0'}</td>`;
+                let thailandCf;
+                if (isBaseModel) {
+                    thailandCf = '1.000';
+                } else {
+                    thailandCf = baseModelValues?.thailand ? calculateConversionFactor(item.thailand_wc, baseModelValues.thailand).toFixed(3) : '0.000';
+                }
+                tr.innerHTML += `<td class="conversion-factor">${thailandCf}</td>`;
+                
+                // ============ Argentina ============
+                tr.innerHTML += `<td class="work-content">${item.argentina_wc ? item.argentina_wc.toFixed(1) : '0.0'}</td>`;
+                let argentinaCf;
+                if (isBaseModel) {
+                    argentinaCf = '1.000';
+                } else {
+                    argentinaCf = baseModelValues?.argentina ? calculateConversionFactor(item.argentina_wc, baseModelValues.argentina).toFixed(3) : '0.000';
+                }
+                tr.innerHTML += `<td class="conversion-factor">${argentinaCf}</td>`;
+                
+                // ============ Colombia ============
+                tr.innerHTML += `<td class="work-content">${item.colombia_wc ? item.colombia_wc.toFixed(1) : '0.0'}</td>`;
+                let colombiaCf;
+                if (isBaseModel) {
+                    colombiaCf = '1.000';
+                } else {
+                    colombiaCf = baseModelValues?.colombia ? calculateConversionFactor(item.colombia_wc, baseModelValues.colombia).toFixed(3) : '0.000';
+                }
+                tr.innerHTML += `<td class="conversion-factor">${colombiaCf}</td>`;
+                
+                // ============ Nepal ============
+                tr.innerHTML += `<td class="work-content">${item.nepal_wc ? item.nepal_wc.toFixed(1) : '0.0'}</td>`;
+                let nepalCf;
+                if (isBaseModel) {
+                    nepalCf = '1.000';
+                } else {
+                    nepalCf = baseModelValues?.nepal ? calculateConversionFactor(item.nepal_wc, baseModelValues.nepal).toFixed(3) : '0.000';
+                }
+                tr.innerHTML += `<td class="conversion-factor">${nepalCf}</td>`;
+                
+                // ============ Bangladesh ============
+                tr.innerHTML += `<td class="work-content">${item.bangladesh_wc ? item.bangladesh_wc.toFixed(1) : '0.0'}</td>`;
+                let bangladeshCf;
+                if (isBaseModel) {
+                    bangladeshCf = '1.000';
+                } else {
+                    bangladeshCf = baseModelValues?.bangladesh ? calculateConversionFactor(item.bangladesh_wc, baseModelValues.bangladesh).toFixed(3) : '0.000';
+                }
+                tr.innerHTML += `<td class="conversion-factor">${bangladeshCf}</td>`;
+                
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Calculate averages
+        function calculateAverages() {
+            let cbuSum = 0, cbuCount = 0;
+            let brazilSum = 0, brazilCount = 0;
+            let thailandSum = 0, thailandCount = 0;
+            let argentinaSum = 0, argentinaCount = 0;
+            let colombiaSum = 0, colombiaCount = 0;
+            let nepalSum = 0, nepalCount = 0;
+            let bangladeshSum = 0, bangladeshCount = 0;
+            
+            allModelsData.forEach(item => {
+                if (item.cbu_wc > 0) { cbuSum += item.cbu_wc; cbuCount++; }
+                if (item.brazil_wc > 0) { brazilSum += item.brazil_wc; brazilCount++; }
+                if (item.thailand_wc > 0) { thailandSum += item.thailand_wc; thailandCount++; }
+                if (item.argentina_wc > 0) { argentinaSum += item.argentina_wc; argentinaCount++; }
+                if (item.colombia_wc > 0) { colombiaSum += item.colombia_wc; colombiaCount++; }
+                if (item.nepal_wc > 0) { nepalSum += item.nepal_wc; nepalCount++; }
+                if (item.bangladesh_wc > 0) { bangladeshSum += item.bangladesh_wc; bangladeshCount++; }
+            });
+            
+            document.getElementById('avgCBU').innerHTML = cbuCount > 0 ? (cbuSum / cbuCount).toFixed(1) : '0.0';
+            document.getElementById('avgBrazil').innerHTML = brazilCount > 0 ? (brazilSum / brazilCount).toFixed(1) : '0.0';
+            document.getElementById('avgThailand').innerHTML = thailandCount > 0 ? (thailandSum / thailandCount).toFixed(1) : '0.0';
+            document.getElementById('avgArgentina').innerHTML = argentinaCount > 0 ? (argentinaSum / argentinaCount).toFixed(1) : '0.0';
+            document.getElementById('avgColombia').innerHTML = colombiaCount > 0 ? (colombiaSum / colombiaCount).toFixed(1) : '0.0';
+            document.getElementById('avgNepal').innerHTML = nepalCount > 0 ? (nepalSum / nepalCount).toFixed(1) : '0.0';
+            document.getElementById('avgBangladesh').innerHTML = bangladeshCount > 0 ? (bangladeshSum / bangladeshCount).toFixed(1) : '0.0';
+        }
+
+        // Initialize
+        loadWorkContentData();
+    </script>
+</body>
+</html>
